@@ -11,25 +11,26 @@
     "pod:install": "pushd ios && pod install && popd",
     "purge:android": "(cd android && ./gradlew --stop) && rm -rf ~/.gradle/caches android/app/build",
     "purge:ios": "rm -rf ios/Pods ios/build ~/Library/Caches/CocoaPods ~/Library/Developer/Xcode/DerivedData && pushd ios && pod cache clean --all && popd",
-    "purge:js": "watchman watch-del-all && killall -9 node && rm -rf node_modules && npm cache verify"
+    "purge:js": "watchman watch-del-all && killall -9 node && rm -rf node_modules && yarn cache clean",
+    "purge": "yarn purge:js && yarn purge:android && yarn purge:ios"
   },
   "dependencies": {
-    "moment": "^2.29.1",
-    "react": "17.0.2",
-    "react-native": "0.66.4",
-    "@react-native-picker/picker": "^2.4.1",
-    "@react-native-community/datetimepicker": "^6.1.2",
+    "moment": "^2.29.4",
+    "react": "18.1.0",
+    "react-native": "0.70.7",
+    "@react-native-picker/picker": "^2.4.8",
+    "@react-native-community/datetimepicker": "^6.7.4",
     "@hortau/react-native-wheel-picker-android": "../"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.9",
-    "@babel/runtime": "^7.13.9",
-    "@react-native-community/eslint-config": "^1.1.0",
+    "@babel/core": "^7.20.12",
+    "@babel/runtime": "^7.20.13",
+    "@react-native-community/eslint-config": "^2.0.0",
     "babel-jest": "^26.6.3",
-    "eslint": "^7.14.0",
+    "eslint": "^7.32.0",
     "jest": "^26.6.3",
-    "metro-react-native-babel-preset": "^0.66.2",
-    "react-test-renderer": "17.0.2"
+    "metro-react-native-babel-preset": "^0.72.3",
+    "react-test-renderer": "18.1.0"
   },
   "jest": {
     "preset": "react-native"

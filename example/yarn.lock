@@ -1133,11 +1133,7 @@
     "@hapi/hoek" "^9.0.0"
 
 "@hortau/react-native-wheel-picker-android@../":
-  version "4.2.0"
-  dependencies:
-    "@react-native-community/datetimepicker" "^6.7.4"
-    "@react-native-picker/picker" "^2.4.8"
-    moment "^2.29.4"
+  version "4.2.1"
 
 "@humanwhocodes/config-array@^0.5.0":
   version "0.5.0"
@@ -1569,10 +1565,10 @@
     prompts "^2.4.0"
     semver "^6.3.0"
 
-"@react-native-community/datetimepicker@^6.7.4":
-  version "6.7.4"
-  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-6.7.4.tgz#1c29f9305ce5d3841647d2a6823d4efcb2dcad1b"
-  integrity sha512-a6O1cFJslChHdrFAWc6H+2VJehhjY1hDoLKRgO2L31S5S/59WCIgOmknXwEX/MBg4Jh8PKZJ7DeIkbiON253BA==
+"@react-native-community/datetimepicker@^6.7.5":
+  version "6.7.5"
+  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-6.7.5.tgz#214796f2d131b6af9cb9d4dea69d4a1981fa2236"
+  integrity sha512-E2Zh6mwvZ6CFEMKP++rdxxjJiB45fYPpdZhJwdZ2vUVwqovqu1cQRDLZmz4XrcHSyuacgR4WUnkYFf0F2nnNIg==
   dependencies:
     invariant "^2.2.4"
 

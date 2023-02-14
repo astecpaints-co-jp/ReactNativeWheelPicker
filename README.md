@@ -15,7 +15,7 @@ You can clone the repo and run example from ./example folder
 
 ## Installation
 
-`yarn add @hortau/react-native-wheel-picker-android`
+`yarn add @hortau/react-native-wheel-picker-android moment @react-native-community/datetimepicker @react-native-picker/picker`
 
 ![](./src/assets/pickerAndroid.gif)
 ![](./src/assets/pickerIos.gif)

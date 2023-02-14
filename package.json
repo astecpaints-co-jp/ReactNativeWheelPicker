@@ -1,6 +1,6 @@
 {
   "name": "@hortau/react-native-wheel-picker-android",
-  "version": "4.2.1",
+  "version": "4.2.2",
   "description": "Simple Wheel Picker for Android to use with react-native",
   "main": "index.tsx",
   "repository": {
@@ -22,9 +22,9 @@
     "url": "https://github.com/Cero-Studio/ReactNativeWheelPicker/issues"
   },
   "homepage": "https://github.com/Cero-Studio/ReactNativeWheelPicker",
-  "dependencies": {
-    "@react-native-community/datetimepicker": "^6.7.4",
-    "@react-native-picker/picker": "^2.4.8",
-    "moment": "^2.29.4"
+  "peerDependencies": {
+    "@react-native-community/datetimepicker": ">=5",
+    "@react-native-picker/picker": ">=2",
+    "moment": ">=2"
   }
 }

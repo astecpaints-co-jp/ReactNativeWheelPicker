@@ -19,7 +19,7 @@
     "react": "18.1.0",
     "react-native": "0.70.7",
     "@react-native-picker/picker": "^2.4.8",
-    "@react-native-community/datetimepicker": "^6.7.4",
+    "@react-native-community/datetimepicker": "^6.7.5",
     "@hortau/react-native-wheel-picker-android": "../"
   },
   "devDependencies": {

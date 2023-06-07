@@ -1,4 +1,4 @@
-# React native wheel picker V3
+# React native wheel picker
 
 <p>
 <img src="http://img.shields.io/npm/v/@hortau/react-native-wheel-picker-android.svg" />
@@ -179,6 +179,10 @@ onDateSelected = date => {}
 | hideHours                                                                               |      false       |    `boolean`    | Hide hours picker (Android only)                     |
 | hideMinutes                                                                             |      false       |    `boolean`    | Hide minutes picker (Android only)                   |
 | hideAM                                                                                  |      false       |    `boolean`    | Hide time format picker (Android only)               |
+
+## Publish to GitHub Packages
+    npm login --scope=@hortau --auth-type=legacy --registry=https://npm.pkg.github.com
+    npm publish --access public
 
 ## Questions or suggestions?
 

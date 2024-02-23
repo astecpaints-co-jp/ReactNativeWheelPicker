@@ -22,9 +22,9 @@
   "author": "Artem Kosiakevych <artem.kosiakevych@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Cero-Studio/ReactNativeWheelPicker/issues"
+    "url": "https://github.com/Hortau/ReactNativeWheelPicker/issues"
   },
-  "homepage": "https://github.com/Cero-Studio/ReactNativeWheelPicker",
+  "homepage": "https://github.com/Hortau/ReactNativeWheelPicker",
   "peerDependencies": {
     "@react-native-community/datetimepicker": ">=5",
     "@react-native-picker/picker": ">=2",

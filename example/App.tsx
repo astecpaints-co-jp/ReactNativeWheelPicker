@@ -3,11 +3,9 @@
  * https://github.com/facebook/react-native
  *
  * @format
- * @flow strict-local
  */
 
 import React, {useState} from 'react';
-import type {Node} from 'react';
 import {
   Platform,
   SafeAreaView,
@@ -33,10 +31,10 @@ const weekdays = [
   'friday',
 ];
 
-const App: () => Node = () => {
+const App: () => JSX.Element = () => {
   const [selectedItem, setSelectedItem] = useState(0);
-  const [time, setTime] = useState(() => new Date());
-  const [date, setDate] = useState(() => new Date());
+  const [, setTime] = useState(() => new Date());
+  const [, setDate] = useState(() => new Date());
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -44,13 +42,13 @@ const App: () => Node = () => {
         <ScrollView contentInsetAdjustmentBehavior="automatic">
           <Text style={styles.weekdays}>{weekdays[selectedItem]}</Text>
           <WheelPicker
-            onItemSelected={index => setSelectedItem(index)}
+            onItemSelected={(index: any) => setSelectedItem(index)}
             data={weekdays}
           />
           <TimePicker
             initPosition={0}
             style={styles.picker}
-            onTimeSelected={selectedTime => {
+            onTimeSelected={(selectedTime: any) => {
               setTime(selectedTime);
             }}
           />
@@ -59,7 +57,7 @@ const App: () => Node = () => {
             initPosition={0}
             style={styles.picker}
             mode={'date'}
-            onDateSelected={selectedDate => setDate(selectedDate)}
+            onDateSelected={(selectedDate: any) => setDate(selectedDate)}
           />
         </ScrollView>
       </SafeAreaView>

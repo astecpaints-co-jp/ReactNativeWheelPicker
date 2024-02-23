@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 # You may use http://rbenv.org/ or https://rvm.io/ to install and use this version
-ruby '2.7.6'
+ruby '>= 3.0.0'
 
-# Enforce specific version of cocoapods due to the incompatibilities found with the graph pod library
-gem 'cocoapods', '~> 1.11', '= 1.11.3'
+gem 'cocoapods', '>= 1.15.2'

@@ -4,33 +4,41 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "ios": "yarn pod:install && react-native run-ios",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "pod:install": "pushd ios && pod install && popd",
+    "pod:install": "cd ios && bundle exec pod install && cd ..",
     "purge:android": "(cd android && ./gradlew --stop) && rm -rf ~/.gradle/caches android/app/build",
-    "purge:ios": "rm -rf ios/Pods ios/build ~/Library/Caches/CocoaPods ~/Library/Developer/Xcode/DerivedData && pushd ios && pod cache clean --all && popd",
+    "purge:ios": "rm -rf ios/Pods ios/build ~/Library/Caches/CocoaPods ~/Library/Developer/Xcode/DerivedData && cd ios && bundle exec pod cache clean --all && cd ..",
     "purge:js": "watchman watch-del-all && killall -9 node && rm -rf node_modules && yarn cache clean",
     "purge": "yarn purge:js && yarn purge:android && yarn purge:ios"
   },
+  "packageManager": "yarn@1.22.19",
   "dependencies": {
-    "moment": "^2.29.4",
-    "react": "18.1.0",
-    "react-native": "0.70.7",
-    "@react-native-picker/picker": "^2.4.8",
-    "@react-native-community/datetimepicker": "^6.7.5",
-    "@hortau/react-native-wheel-picker-android": "../"
+    "@hortau/react-native-wheel-picker-android": "../",
+    "@react-native-community/datetimepicker": "^7.6.2",
+    "@react-native-picker/picker": "^2.6.1",
+    "moment": "^2.30.1",
+    "react": "18.2.0",
+    "react-native": "0.71.16"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.12",
-    "@babel/runtime": "^7.20.13",
-    "@react-native-community/eslint-config": "^2.0.0",
-    "babel-jest": "^26.6.3",
-    "eslint": "^7.32.0",
-    "jest": "^26.6.3",
-    "metro-react-native-babel-preset": "^0.72.3",
-    "react-test-renderer": "18.1.0"
+    "@babel/core": "^7.23.9",
+    "@babel/preset-env": "^7.23.9",
+    "@babel/runtime": "^7.23.9",
+    "@react-native-community/eslint-config": "^3.2.0",
+    "@tsconfig/react-native": "^2.0.2",
+    "@types/jest": "^29.2.1",
+    "@types/react": "^18.2.57",
+    "@types/react-test-renderer": "^18.0.7",
+    "babel-jest": "^29.2.1",
+    "eslint": "^8.19.0",
+    "jest": "^29.2.1",
+    "metro-react-native-babel-preset": "0.73.10",
+    "prettier": "^2.4.1",
+    "react-test-renderer": "18.2.0",
+    "typescript": "4.8.4"
   },
   "jest": {
     "preset": "react-native"

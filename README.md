@@ -183,6 +183,7 @@ onDateSelected = date => {}
 ## Publish to GitHub Packages
     npm login --scope=@hortau --auth-type=legacy --registry=https://npm.pkg.github.com
     npm publish --access public
+    npm publish --@hortau:registry=https://registry.npmjs.org --access public
 
 ## Questions or suggestions?
 

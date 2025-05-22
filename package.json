@@ -3,6 +3,7 @@
   "version": "4.3.0",
   "description": "Simple Wheel Picker for Android to use with react-native",
   "main": "index.tsx",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hortau/ReactNativeWheelPicker.git"

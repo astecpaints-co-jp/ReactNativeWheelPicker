@@ -1,13 +1,20 @@
 import React from 'react';
 import { DatePickerIOSProps, StyleProp, ViewStyle } from 'react-native';
 
+export interface IWheelPickerItem {
+  label: string;
+  disabled?: boolean;
+}
+
+
 interface IStyle {
 	selectedItemTextColor?: string;
+	disabledItemTextColor?: string;
 	selectedItemTextSize?: number;
-	selectedItemTextFontFamily: string;
+	selectedItemTextFontFamily?: string;
 	itemTextColor?: string;
 	itemTextSize?: number;
-	itemTextFontFamily: string;
+	itemTextFontFamily?: string;
 	indicatorColor?: string;
 	hideIndicator?: boolean;
 	indicatorWidth?: number;
@@ -16,7 +23,7 @@ interface IStyle {
 }
 
 export interface IPropsWheelPicker extends IStyle {
-	data: string[];
+	data: IWheelPickerItem[];
 	isCyclic?: boolean;
 	initPosition?: number;
 	selectedItem?: number;
@@ -56,3 +63,4 @@ export interface IPropsDatePicker extends DatePickerIOSProps {
 export class DatePicker extends React.Component<IPropsDatePicker> {
 	constructor(props: IPropsDatePicker);
 }
+

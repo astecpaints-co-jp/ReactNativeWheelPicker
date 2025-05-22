@@ -13,7 +13,7 @@ final class LoopRunnable implements Runnable {
     public final void run() {
         LoopListener listener = loopView.loopListener;
         int selectedItem = LoopView.getSelectedItem(loopView);
-        loopView.arrayList.get(selectedItem);
+        loopView.items.get(selectedItem);
         listener.onItemSelect(loopView, selectedItem);
     }
 }

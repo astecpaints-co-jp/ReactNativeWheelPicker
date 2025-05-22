@@ -13,11 +13,13 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
+
 
 public class LoopView extends View {
     ScheduledExecutorService mExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -32,13 +34,14 @@ public class LoopView extends View {
     Paint paintA;  //paint that draw top and bottom text
     Paint paintB;  // paint that draw center text
     Paint paintC;  // paint that draw line besides center text
-    ArrayList arrayList;
+    List<WheelItem> items;
     int textSize;
     int maxTextWidth;
     int maxTextHeight;
     int colorGray;
     int colorBlack;
     int colorGrayLight;
+    int colorDisabled;
     float lineSpacingMultiplier;
     boolean isLoop;
     int firstLineY;
@@ -75,6 +78,7 @@ public class LoopView extends View {
         colorGray = 0xffafafaf;
         colorBlack = 0xff313131;
         colorGrayLight = 0xffc5c5c5;
+        colorDisabled = 0x40cccccc;
         lineSpacingMultiplier = 2.0F;
         isLoop = false;
         initPosition = 0;
@@ -110,7 +114,7 @@ public class LoopView extends View {
     }
 
     private void initData() {
-        if (arrayList == null) {
+        if (items == null) {
             return;
         }
         paintA.setAntiAlias(true);
@@ -126,7 +130,7 @@ public class LoopView extends View {
         secondLineY = (int) ((measuredHeight + lineSpacingMultiplier * maxTextHeight) / 2.0F);
         if (initPosition == -1) {
             if (isLoop) {
-                initPosition = (arrayList.size() + 1) / 2;
+                initPosition = (items.size() + 1) / 2;
             } else {
                 initPosition = 0;
             }
@@ -136,9 +140,9 @@ public class LoopView extends View {
 
     private void measureTextWidthHeight() {
         Rect rect = new Rect();
-        for (int i = 0; i < arrayList.size(); i++) {
-            String s1 = (String) arrayList.get(i);
-            paintB.getTextBounds(s1, 0, s1.length(), rect);
+        for (int i = 0; i < items.size(); i++) {
+            String label = items.get(i).getLabel();
+            paintB.getTextBounds(label, 0, label.length(), rect);
             int textWidth = rect.width();
             if (textWidth > maxTextWidth) {
                 maxTextWidth = textWidth;
@@ -186,7 +190,7 @@ public class LoopView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         String as[];
-        if (arrayList == null) {
+        if (items == null) {
             super.onDraw(canvas);
             return;
         }
@@ -198,21 +202,21 @@ public class LoopView extends View {
 
         as = new String[itemCount];
         change = (int) (totalScrollY / (lineSpacingMultiplier * maxTextHeight));
-        preCurrentIndex = initPosition + change % arrayList.size();
+        preCurrentIndex = initPosition + change % items.size();
         if (!isLoop) {
             if (preCurrentIndex < 0) {
                 preCurrentIndex = 0;
             }
-            if (preCurrentIndex > arrayList.size() - 1) {
-                preCurrentIndex = arrayList.size() - 1;
+            if (preCurrentIndex > items.size() - 1) {
+                preCurrentIndex = items.size() - 1;
             }
             // break;
         } else {
             if (preCurrentIndex < 0) {
-                preCurrentIndex = arrayList.size() + preCurrentIndex;
+                preCurrentIndex = items.size() + preCurrentIndex;
             }
-            if (preCurrentIndex > arrayList.size() - 1) {
-                preCurrentIndex = preCurrentIndex - arrayList.size();
+            if (preCurrentIndex > items.size() - 1) {
+                preCurrentIndex = preCurrentIndex - items.size();
             }
             // continue;
         }
@@ -223,18 +227,18 @@ public class LoopView extends View {
             int l1 = preCurrentIndex - (itemCount / 2 - k1);
             if (isLoop) {
                 if (l1 < 0) {
-                    l1 = l1 + arrayList.size();
+                    l1 = l1 + items.size();
                 }
-                if (l1 > arrayList.size() - 1) {
-                    l1 = l1 - arrayList.size();
+                if (l1 > items.size() - 1) {
+                    l1 = l1 - items.size();
                 }
-                as[k1] = (String) arrayList.get(l1);
+                as[k1] = items.get(l1).getLabel();
             } else if (l1 < 0) {
                 as[k1] = "";
-            } else if (l1 > arrayList.size() - 1) {
+            } else if (l1 > items.size() - 1) {
                 as[k1] = "";
             } else {
-                as[k1] = (String) arrayList.get(l1);
+                as[k1] = items.get(l1).getLabel();
             }
             k1++;
         }
@@ -254,38 +258,70 @@ public class LoopView extends View {
                 int translateY = (int) (radius - Math.cos(radian) * radius - (Math.sin(radian) * maxTextHeight) / 2D) + offsetY;
                 canvas.translate(0.0F, translateY);
                 canvas.scale(1.0F, (float) Math.sin(radian));
+                
+                int actualPosition = preCurrentIndex - (itemCount / 2 - j1);
+                if (isLoop) {
+                    if (actualPosition < 0) {
+                        actualPosition += items.size();
+                    }
+                    if (actualPosition > items.size() - 1) {
+                        actualPosition -= items.size();
+                    }
+                }
+                
+                boolean isDisabled = items.get(actualPosition).isDisabled();
+                
+                Paint currentPaintA = isDisabled ? getDisabledPaint(paintA) : paintA;
+                Paint currentPaintB = isDisabled ? getDisabledPaint(paintB) : paintB;
+                
                 if (translateY <= firstLineY && maxTextHeight + translateY >= firstLineY) {
                     canvas.save();
                     //top = 0,left = (measuredWidth - maxTextWidth)/2
                     canvas.clipRect(0, 0, measuredWidth, firstLineY - translateY);
-                    drawCenter(canvas, paintA, as[j1],maxTextHeight);
+                    drawCenter(canvas, currentPaintA, as[j1],maxTextHeight);
                     canvas.restore();
                     canvas.save();
                     canvas.clipRect(0, firstLineY - translateY, measuredWidth, (int) (itemHeight));
-                    drawCenter(canvas, paintB, as[j1], maxTextHeight);
+                    drawCenter(canvas, currentPaintB, as[j1], maxTextHeight);
                     canvas.restore();
                 } else if (translateY <= secondLineY && maxTextHeight + translateY >= secondLineY) {
                     canvas.save();
                     canvas.clipRect(0, 0, measuredWidth, secondLineY - translateY);
-                    drawCenter(canvas, paintB, as[j1], maxTextHeight);
+                    drawCenter(canvas, currentPaintB, as[j1], maxTextHeight);
                     canvas.restore();
                     canvas.save();
                     canvas.clipRect(0, secondLineY - translateY, measuredWidth, (int) (itemHeight));
-                    drawCenter(canvas, paintA, as[j1],maxTextHeight);
+                    drawCenter(canvas, currentPaintA, as[j1],maxTextHeight);
                     canvas.restore();
                 } else if (translateY >= firstLineY && maxTextHeight + translateY <= secondLineY) {
                     canvas.clipRect(0, 0, measuredWidth, (int) (itemHeight));
-                    drawCenter(canvas, paintB, as[j1],maxTextHeight);
-                    selectedItem = arrayList.indexOf(as[j1]);
+                    drawCenter(canvas, currentPaintB, as[j1],maxTextHeight);
+                    final String selectedLabel = as[j1];
+                    selectedItem = firstIndex(items, x -> x.getLabel() == selectedLabel);
                 } else {
                     canvas.clipRect(0, 0, measuredWidth, (int) (itemHeight));
-                    drawCenter(canvas, paintA, as[j1],maxTextHeight);
+                    drawCenter(canvas, currentPaintA, as[j1],maxTextHeight);
                 }
                 canvas.restore();
             }
             j1++;
         }
         super.onDraw(canvas);
+    }
+
+    public static <T> int firstIndex(List<T> list, Predicate<T> condition) {
+        for (int i = 0; i < list.size(); i++) {
+            if (condition.test(list.get(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    private Paint getDisabledPaint(Paint original) {
+        Paint disabledPaint = new Paint(original);
+        disabledPaint.setColor(colorDisabled);
+        return disabledPaint;
     }
 
     private Rect r = new Rect();
@@ -308,6 +344,16 @@ public class LoopView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent motionevent) {
+        int enabledCount = 0;
+        if (items != null) {
+            for (WheelItem item : items) {
+                if (!item.isDisabled()) enabledCount++;
+            }
+        }
+        if (enabledCount <= 1) {
+            return false;
+        }
+
         switch (motionevent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 y1 = motionevent.getRawY();
@@ -341,7 +387,7 @@ public class LoopView extends View {
         }
 
         if (!isLoop) {
-            int circleLength = (int) ((float) (arrayList.size() - 1 - initPosition) * (lineSpacingMultiplier * maxTextHeight));
+            int circleLength = (int) ((float) (items.size() - 1 - initPosition) * (lineSpacingMultiplier * maxTextHeight));
             if (totalScrollY >= circleLength) {
                 totalScrollY = circleLength;
             }
@@ -373,14 +419,19 @@ public class LoopView extends View {
         loopListener = LoopListener;
     }
 
-    public final void setArrayList(ArrayList arraylist) {
-        this.arrayList = arraylist;
+    public final void setItems(List<WheelItem> items) {
+        this.items = items;
         initData();
         invalidate();
     }
 
     public final void setSelectedItemTextColor(int color) {
         paintB.setColor(color);
+    }
+
+    public final void setDisabledItemTextColor(int color) {
+        colorDisabled = color;
+        invalidate();
     }
 
     public final void setSelectedItemTextSize(int textSize) {
@@ -421,6 +472,41 @@ public class LoopView extends View {
         totalScrollY = (int) ((float) (position - initPosition) * (lineSpacingMultiplier * maxTextHeight));
         invalidate();
         smoothScroll();
+    }
+    
+    public boolean isItemDisabled(int position) {
+        return position >= 0 &&
+               position < items.size() && 
+               items.get(position).isDisabled();
+    }
+
+    public int findNearestEnabled(int fromIndex) {
+        if (dy == 0) {
+            int up = fromIndex, down = fromIndex;
+            while (up >= 0 || down < items.size()) {
+                if (up >= 0 && !items.get(up).isDisabled()) return up;
+                if (down < items.size() && !items.get(down).isDisabled()) return down;
+                up--;
+                down++;
+            }
+            return -1;
+        }
+        if (dy < 0) { // down
+            for (int i = fromIndex + 1; i < items.size(); i++) {
+                if (!items.get(i).isDisabled()) return i;
+            }
+            for (int i = fromIndex - 1; i >= 0; i--) {
+                if (!items.get(i).isDisabled()) return i;
+            }
+        } else { // up
+            for (int i = fromIndex - 1; i >= 0; i--) {
+                if (!items.get(i).isDisabled()) return i;
+            }
+            for (int i = fromIndex + 1; i < items.size(); i++) {
+                if (!items.get(i).isDisabled()) return i;
+            }
+        }
+        return -1;
     }
 
 }

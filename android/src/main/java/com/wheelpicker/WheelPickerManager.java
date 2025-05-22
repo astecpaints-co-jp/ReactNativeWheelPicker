@@ -10,6 +10,7 @@ import android.util.Log;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.SimpleViewManager;
@@ -38,26 +39,22 @@ public class WheelPickerManager extends SimpleViewManager<LoopView> implements L
 
     @ReactProp(name = "data")
     public void setData(LoopView wheelPicker, ReadableArray data) {
-        if (wheelPicker!=null){
-            List<String> emptyList = new ArrayList<>();
-            try {
-                List<Integer> dataInt = new ArrayList<>();
-                for (int i = 0; i <data.size() ; i++) {
-                    dataInt.add(data.getInt(i));
-                }
-                wheelPicker.setArrayList((ArrayList) dataInt);
-            } catch (Exception e){
+        if (wheelPicker != null && data != null) {
+
+            List<WheelItem> items = new ArrayList<>();
+
+            for (int i = 0; i < data.size(); i++) {
                 try {
-                    List<String> dataString = new ArrayList<>();
-                    for (int i = 0; i <data.size() ; i++) {
-                        dataString.add(data.getString(i));
-                    }
-                    wheelPicker.setArrayList((ArrayList) dataString);
-                } catch (Exception ex){
-                    ex.printStackTrace();
-                    wheelPicker.setArrayList((ArrayList) emptyList);
+                    ReadableMap item = data.getMap(i);
+
+                    String label = item.getString("label");
+                    boolean disabled = item.hasKey("disabled") && item.getBoolean("disabled");
+                    items.add(new WheelItem(label, disabled));
+                } catch (Exception e) {
+                    items.add(new WheelItem("Item " + i, false));
                 }
             }
+            wheelPicker.setItems(items);
         }
     }
 
@@ -65,6 +62,13 @@ public class WheelPickerManager extends SimpleViewManager<LoopView> implements L
     public void setCyclic(LoopView wheelPicker, Boolean isCyclic) {
         if (wheelPicker!=null){
             wheelPicker.setLoop(isCyclic);
+        }
+    }
+
+    @ReactProp(name = "disabledItemTextColor")
+    public void setDisabledItemTextColor(LoopView wheelPicker, String disabledItemTextColor) {
+        if (wheelPicker!=null){
+            wheelPicker.setDisabledItemTextColor(convertColor(disabledItemTextColor));
         }
     }
 
@@ -151,7 +155,14 @@ public class WheelPickerManager extends SimpleViewManager<LoopView> implements L
 
     @ReactProp(name = "selectedItem")
     public void setSelectedItem(LoopView wheelPicker, int pos) {
-        if (wheelPicker!=null){
+        if (wheelPicker!=null) {
+            if (wheelPicker.items != null && wheelPicker.items.size() != 0 && wheelPicker.isItemDisabled(pos)) {
+                int nearest = wheelPicker.findNearestEnabled(pos);
+                if (nearest != -1 && nearest != pos) {
+                    wheelPicker.setSelectedItem(nearest);
+                    return;
+                }
+            }
             wheelPicker.setSelectedItem(pos);
         }
     }
